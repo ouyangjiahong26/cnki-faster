@@ -7,6 +7,13 @@
     return;
   }
 
+  // 只处理知网页面：直连 *.cnki.net/*.cnki.com.cn，或 CARSI 代理（如 libyc.nudt.edu.cn）
+  // 上路径被改写成 /net/cnki/... 的页面；科大图书馆门户等其他页面直接跳过。
+  const isDirectCnki = /(^|\.)cnki\.(net|com\.cn)$/.test(location.hostname);
+  if (!isDirectCnki && !CNKI_FASTER_PROXY_PATH.test(location.pathname)) {
+    return;
+  }
+
   let settings = Object.assign({}, CNKI_FASTER_DEFAULTS);
   let settingsReady = false;
   let finished = false;

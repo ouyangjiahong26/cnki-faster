@@ -43,7 +43,7 @@ browser.storage.local.get({ settings: CNKI_FASTER_DEFAULTS }).then((res) => {
 
 document.getElementById("reload-cnki").addEventListener("click", () => {
   browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-    if (tab && /^https?:\/\/([^/]+\.)?cnki\.(net|com\.cn)\//.test(tab.url || "")) {
+    if (tab && /^https?:\/\/([^/]+\.)?(cnki\.(net|com\.cn)|nudt\.edu\.cn)\//.test(tab.url || "")) {
       browser.tabs.reload(tab.id);
     }
   });
