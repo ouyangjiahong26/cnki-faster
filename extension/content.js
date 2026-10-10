@@ -2,6 +2,9 @@
 /* global CNKI_FASTER_DEFAULTS, CNKI_FASTER_MODULES, CNKI_FASTER_OFF_PARAM */
 
 (() => {
+  // Chrome 系只有 chrome 命名空间；用到的 API 三端 MV3 均支持，无需 polyfill
+  const browser = globalThis.browser ?? globalThis.chrome;
+
   // 逃生舱：URL 带 cnki-faster=off 时本次不做任何精简
   if (new URLSearchParams(location.search).get(CNKI_FASTER_OFF_PARAM) === "off") {
     return;
@@ -115,15 +118,6 @@
     bar.appendChild(cfg);
 
     (document.body || document.documentElement).appendChild(bar);
-
-    browser.runtime
-      .sendMessage({ type: "cnki-faster:getStats" })
-      .then((res) => {
-        if (res && res.blockedCount > 0) {
-          bar.title = "本次会话已拦截 " + res.blockedCount + " 个无关请求";
-        }
-      })
-      .catch(() => {});
   }
 
   function finish() {
