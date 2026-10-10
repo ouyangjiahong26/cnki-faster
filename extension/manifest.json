@@ -17,6 +17,7 @@
     "webRequestBlocking",
     "*://*.cnki.net/*",
     "*://*.cnki.com.cn/*",
+    "*://*.nudt.edu.cn/*",
     "*://hm.baidu.com/*"
   ],
   "background": {
@@ -33,7 +34,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.cnki.net/*", "*://*.cnki.com.cn/*"],
+      "matches": ["*://*.cnki.net/*", "*://*.cnki.com.cn/*", "*://*.nudt.edu.cn/*"],
       "js": ["config.js", "content.js"],
       "run_at": "document_start"
     }

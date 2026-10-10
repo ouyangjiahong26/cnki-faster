@@ -19,6 +19,12 @@
 - **请求拦截**：取消广告位脚本（`a.cnki.net/spot`）、前端埋点
   （`support.cnki.net/applog`）、图书推荐（`book.cnki.net`）、二维码图、客服等请求；
   下载链接（`bar.cnki.net/bar/download/order`）和登录、检索功能不受影响。
+- **CARSI 代理适配**：支持通过国防科大图书馆代理（`*.nudt.edu.cn`，如
+  `libyc.nudt.edu.cn/https/443/net/cnki/kns/...`）访问的知网页面。代理把目标域名按段
+  倒写进路径（`a.cnki.net` → `/net/cnki/a/`），请求拦截规则同时匹配直连与倒序两种形态。
+  适配其他学校的 CARSI 入口：把该校代理域名按 `manifest.json` 中 `nudt.edu.cn` 的三处
+  写法（permissions、content_scripts.matches、background.js 的 `FILTER_URLS`）追加即可，
+  页面识别与请求匹配逻辑本身是通用的。
 - **设置**：点击工具栏图标弹出设置面板，每个模块可单独开关；也可在文献页右下角小浮条点
   「设置」。修改立即保存，刷新知网页面后生效。
 - **逃生舱**：文献页右下角小浮条 →「完整页」，本次以 `?cnki-faster=off` 参数重新加载，

@@ -75,3 +75,8 @@ const CNKI_FASTER_MODULES = [
 
 // 逃生舱 URL 参数：文献页加载时带上 cnki-faster=off 则本次不做任何精简
 const CNKI_FASTER_OFF_PARAM = "cnki-faster";
+
+// CARSI 等图书馆代理会把目标域名按段倒写进路径：kns.cnki.net -> /net/cnki/kns/
+// 代理站点（如 libyc.nudt.edu.cn）上，路径命中此正则才按知网页面处理；
+// article/abstract、kcms/detail 是兜底，覆盖未识别的代理改写格式。
+const CNKI_FASTER_PROXY_PATH = /\/net\/cnki\/|\/cn\/com\/cnki\/|article\/abstract|kcms\/detail/;
