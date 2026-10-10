@@ -1,0 +1,50 @@
+name: CI
+
+# job 名 lint、test 与 main 分支保护的 required checks 一一对应；
+# 不加 paths-ignore，否则被跳过的 required check 会永久 pending
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: JS 语法检查
+        run: |
+          status=0
+          for f in extension/*.js; do
+            node --check "$f" || status=1
+          done
+          exit "$status"
+      - name: manifest 校验
+        run: python3 -m json.tool extension/manifest.json > /dev/null
+      - name: web-ext lint
+        # 唯一预期警告：Firefox 不识别 background.service_worker 键（跨浏览器双键方案）
+        run: npx --yes web-ext@8 lint -s extension
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 规则测试
+        run: node --test tests/rules.test.mjs
