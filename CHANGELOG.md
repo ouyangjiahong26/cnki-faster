@@ -7,10 +7,18 @@
 
 计划中：
 
-- 跨浏览器支持：单一 MV3 代码库适配 Firefox、Chrome、Edge，请求拦截改为
-  declarativeNetRequest 声明式规则
-- CI 与发布流水线：lint、测试、tag 触发自动打包 GitHub Release
 - 商店上架物料与操作清单（AMO、Chrome Web Store、Edge Add-ons）
+
+## 0.2.0 - 2026-10-10
+
+- 跨浏览器支持：单一 MV3 代码库适配 Firefox、Chrome、Edge；background 双键
+  声明（service_worker 与 scripts）各端取所需；请求拦截从阻塞式 webRequest
+  改为 declarativeNetRequest 声明式规则，规则生成抽为可测试的纯函数模块
+- 仓库治理：MIT License、CHANGELOG、CONTRIBUTING、SECURITY、README 重写，
+  删除早期 Python 脚手架，补仓库描述与 topics
+- CI 与发布流水线：lint 与 test 两个 job（对齐分支保护 required checks），
+  tag 触发自动打包 GitHub Release（zip 与 SHA256SUMS）
+- 隐私：声明 data_collection_permissions 为 none，扩展不收集任何数据
 
 ## 0.1.0 - 2026-10-10
 

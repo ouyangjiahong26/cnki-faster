@@ -1,0 +1,71 @@
+name: Release
+
+# 打 tag（v*）触发：复跑检查后打包 zip 与 SHA256SUMS，创建 GitHub Release。
+# 产物是一个 zip（manifest 在压缩包根目录），Firefox、Chrome、Edge 通用。
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: JS 语法检查
+        run: |
+          status=0
+          for f in extension/*.js; do
+            node --check "$f" || status=1
+          done
+          exit "$status"
+      - name: manifest 校验
+        run: python3 -m json.tool extension/manifest.json > /dev/null
+      - name: web-ext lint
+        run: npx --yes web-ext@8 lint -s extension
+      - name: 规则测试
+        run: node --test tests/rules.test.mjs
+
+  release:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: 打包
+        run: |
+          v="${VERSION#v}"
+          cd extension
+          zip -r "../cnki-faster-${v}.zip" .
+          cd ..
+          sha256sum "cnki-faster-${v}.zip" > SHA256SUMS.txt
+      - name: 提取该版本更新日志
+        run: |
+          v="${VERSION#v}"
+          awk -v ver="$v" '
+            $0 ~ "^## " ver " " { flag = 1; next }
+            /^## / { flag = 0 }
+            flag
+          ' CHANGELOG.md > /tmp/release-notes.md
+          cat /tmp/release-notes.md
+      - name: 创建 Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v="${VERSION#v}"
+          gh release create "$VERSION" \
+            "cnki-faster-${v}.zip" SHA256SUMS.txt \
+            --title "$VERSION" \
+            --notes-file /tmp/release-notes.md

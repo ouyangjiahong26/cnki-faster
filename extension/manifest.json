@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "CNKI Faster 知网精简加速",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "按模块移除知网文献页的 AI 推荐、引文网络、相关文献推荐等内容，并拦截广告与埋点请求，只保留文献信息与 PDF/CAJ 下载。",
   "author": "ouyangjiahong",
   "minimum_chrome_version": "102",
