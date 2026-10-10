@@ -5,9 +5,7 @@
 
 ## Unreleased
 
-计划中：
-
-- 商店上架物料与操作清单（AMO、Chrome Web Store、Edge Add-ons）
+（暂无待发布条目）
 
 ## 0.2.0 - 2026-10-10
 
