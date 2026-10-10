@@ -44,6 +44,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - name: 打包
         run: |
           v="${VERSION#v}"
@@ -51,14 +52,26 @@ jobs:
           zip -r "../cnki-faster-${v}.zip" .
           cd ..
           sha256sum "cnki-faster-${v}.zip" > SHA256SUMS.txt
-      - name: 提取该版本更新日志
+      - name: 生成 Release 说明
         run: |
-          v="${VERSION#v}"
-          awk -v ver="$v" '
-            $0 ~ "^## " ver " " { flag = 1; next }
-            /^## / { flag = 0 }
-            flag
-          ' CHANGELOG.md > /tmp/release-notes.md
+          prev=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || true)
+          {
+            echo "# cnki-faster ${VERSION}"
+            echo
+            awk -v ver="$VERSION" '
+              $0 ~ "^## " ver " " { flag = 1 }
+              /^## / && $2 != ver { flag = 0 }
+              flag
+            ' CHANGELOG.md
+            echo
+            echo "---"
+            echo
+            if [ -n "$prev" ]; then
+              echo "**与 ${prev} 以来的提交对比：** https://github.com/${GITHUB_REPOSITORY}/compare/${prev}...${VERSION}"
+            else
+              echo "本仓库首个发布版本。"
+            fi
+          } > /tmp/release-notes.md
           cat /tmp/release-notes.md
       - name: 创建 Release
         env:
