@@ -1,0 +1,41 @@
+{
+  "manifest_version": 2,
+  "name": "CNKI Faster 知网精简加速",
+  "version": "0.1.0",
+  "description": "按模块移除知网文献页的 AI 推荐、引文网络、相关文献推荐等内容，并拦截广告与埋点请求，只保留文献信息与 PDF/CAJ 下载。",
+  "author": "ouyangjiahong",
+  "applications": {
+    "gecko": {
+      "id": "cnki-faster@ouyangjiahong",
+      "strict_min_version": "115.0"
+    }
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "*://*.cnki.net/*",
+    "*://*.cnki.com.cn/*",
+    "*://hm.baidu.com/*"
+  ],
+  "background": {
+    "scripts": ["config.js", "background.js"],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_title": "CNKI Faster 设置",
+    "default_popup": "popup.html"
+  },
+  "options_ui": {
+    "page": "popup.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.cnki.net/*", "*://*.cnki.com.cn/*"],
+      "js": ["config.js", "content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
